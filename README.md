@@ -98,3 +98,5 @@ The command line tool code is also derived from the ABP example code.
 
 ### Contributors
 
+* Maximilian Gerhardt (port for LMIC HAL, SC18IS602B bridge library)
+* Matthijs Kooijman (LMIC author)
