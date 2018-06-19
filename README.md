@@ -51,9 +51,42 @@ Packet queued.
 [+] TX + RX done, exiting
 ```
 
+Inside TTN console:
+
+![TTN](https://github.com/maxgerhardt/omega2-lmic-lorawan/raw/master/img/TTN.png)
+
+Wireup:
+
+![wireup](https://github.com/maxgerhardt/omega2-lmic-lorawan/raw/master/img/IMG_20180619_135413.jpg)
+
+### Quickstart
+
+You want to try this out? You need: 
+* a SX1276-like radio (e.g. HopeRF RFM95W)
+* NXP SC18IS602B I²C to SPI bridge
+* wires
+* a TTN account
+
+In the TTN console, create a new application and a new device. Set the device to use ABP, 16-bit framecounter and disable frame counter checks. 
+
+The displayed keys in the console (device address, network session key, application session key) can then be used in the console applications.
+
+You need the dependencies installed on your Omega2:
+
+```sh
+opkg update
+opkg install libonioni2c 
+opkg install libonionspi
+```
+
+Wireup the module.
+
+Transfer the binary executable `lorawan_send` to your Omeag2 and execute it with the needed parameters.
+
 ### TODO
 
 * adjustable spreading factor (SF) and coding rate (CR)
+* make radio type selectable (currently SX1276 type)
 * selectable frequency plan (currently hardcoded on EU868), make US frequencies selectable 
 * make LoRa reception work (timing issues right now?)
 * make example with sensors (temp sensor, display, whatever) 
