@@ -16,6 +16,8 @@ static u1_t APPSKEY[16];
 // LoRaWAN end-device address (DevAddr)
 static u4_t DEVADDR;
 
+void do_send(osjob_t* j);
+
 //max lora frame on SF7 is actually a little bit smaller
 uint8_t payload_buf[256];
 size_t payload_len = 0;
@@ -208,12 +210,11 @@ void os_getDevEui(u1_t* buf) { (void) buf;
 void os_getDevKey(u1_t* buf) { (void) buf;
 }
 
-static uint8_t mydata[] = "Hello, world!";
 static osjob_t sendjob;
 
 // Schedule TX every this many seconds (might become longer due to duty
 // cycle limitations).
-const unsigned TX_INTERVAL = 60;
+const unsigned TX_INTERVAL = 10;
 
 // Pin mapping
 const lmic_pinmap lmic_pins = {
@@ -272,10 +273,10 @@ void onEvent(ev_t ev) {
 
 		//the program is done
 		printf("[+] TX + RX done, exiting\n");
-		exit(0);
+		//exit(0);
 
 		// Schedule next transmission
-		//os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
+		os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
 		break;
 	case EV_LOST_TSYNC:
 		printf("EV_LOST_TSYNC\n");
@@ -358,6 +359,8 @@ void setup() {
 
 	// TTN uses SF9 for its RX2 window.
 	LMIC.dn2Dr = DR_SF9;
+
+	LMIC_setClockError(MAX_CLOCK_ERROR * 10 / 100);
 
 	// Set data rate and transmit power for uplink (note: txpow seems to be ignored by the library)
 	LMIC_setDrTxpow(DR_SF9, 14);

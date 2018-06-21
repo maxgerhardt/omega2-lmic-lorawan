@@ -62,7 +62,7 @@ void pinMode(int gpio, int mode) {
 		}
 		if(mode == INPUT) {
 			if((err = gpio_direction_input(gpio_u)) < 0) {
-				printf("[-] Setting GPIO% %d input mode failed\n", gpio);
+				printf("[-] Setting GPIO %d input mode failed\n", gpio);
 			}
 		} else {
 			if((err = gpio_direction_output(gpio_u, 1)) < 0) {
@@ -200,12 +200,17 @@ static void hal_spi_init () {
 		return;
 	}
 #else
+#ifndef USE_SPI_TRANSFER_CALLS
 	//set GPIO0 to SlaveSelect mode (NOT GPIO mode)
 	//use a trick here: put GPIO0 in non-GPIO mode (slave select)
-	//but actualyl use GPIO1 as software-controlled SPI
-	//LMIC wants to do own transfers so we can't have the usualy controlled CS.
+	//but actually use GPIO1 as software-controlled SPI
+	//LMIC wants to do own transfers so we can't have the usually controlled CS.
 	spiBridge.enableGPIO(0, false);
 	spiBridge.enableGPIO(1, true);
+#else
+	//if using SPI transfer calls, connect slave select to GPIO0 normally
+	spiBridge.enableGPIO(0, false);
+#endif
 	spiBridge.configureSPI(SC18IS601B_SPI_MSBFIRST, SC18IS601B_SPIMODE_0, SC18IS601B_SPICLK_1843_kHz);
 #endif
 }
@@ -216,6 +221,16 @@ void hal_pin_nss (u1_t val) {
     digitalWrite(lmic_pins.nss, val);
 #else
 	spiBridge.writeGPIO(1, val);
+#endif
+}
+
+void hal_spi_transfer(uint8_t* txBuf, size_t txLen, uint8_t* rxBuf) {
+#ifdef USE_NATIVE_SPI
+	int err = spiTransfer(&params, txBuf, rxBuf, txLen);
+	if(err == EXIT_FAILURE)
+		printf("[-] SPI transfer failed!\n");
+#else
+	spiBridge.spiTransfer(0, txBuf, txLen, rxBuf);
 #endif
 }
 

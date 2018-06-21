@@ -16,6 +16,9 @@
 extern "C"{
 #endif
 
+/* Hack: add SPI transfer calls instead of byte-wise transfers */
+#define USE_SPI_TRANSFER_CALLS
+
 /*
  * initialize hardware (IO, SPI, TIMER, IRQ).
  */
@@ -42,6 +45,12 @@ void hal_pin_rst (u1_t val);
  *   - read byte and return value
  */
 u1_t hal_spi (u1_t outval);
+
+/**
+ * Transfer a given buffer to the radio slave, save response in rxBuf
+ * allows for higher transfer rates
+ */
+void hal_spi_transfer(uint8_t* txBuf, size_t txLen, uint8_t* rxBuf);
 
 /*
  * disable all CPU interrupts.

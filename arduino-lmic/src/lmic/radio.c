@@ -10,6 +10,7 @@
  *******************************************************************************/
 
 #include "lmic.h"
+#include <stdlib.h>
 
 // ----------------------------------------
 // Registers Mapping
@@ -250,7 +251,6 @@
 // (initialized by radio_init(), used by radio_rand1())
 static u1_t randbuf[16];
 
-
 #ifdef CFG_sx1276_radio
 #define LNA_RX_GAIN (0x20|0x1)
 #elif CFG_sx1272_radio
@@ -259,38 +259,73 @@ static u1_t randbuf[16];
 #error Missing CFG_sx1272_radio/CFG_sx1276_radio
 #endif
 
-
 static void writeReg (u1_t addr, u1_t data ) {
-    hal_pin_nss(0);
+#ifndef USE_SPI_TRANSFER_CALLS
+	hal_pin_nss(0);
     hal_spi(addr | 0x80);
     hal_spi(data);
     hal_pin_nss(1);
+#else
+    uint8_t txBuf[2] = { (uint8_t)(addr | 0x80), data};
+    uint8_t rxBuf[2] = {0};
+    hal_spi_transfer(txBuf, 2, rxBuf);
+#endif
 }
 
 static u1_t readReg (u1_t addr) {
+#ifndef USE_SPI_TRANSFER_CALLS
     hal_pin_nss(0);
     hal_spi(addr & 0x7F);
     u1_t val = hal_spi(0x00);
     hal_pin_nss(1);
     return val;
+#else
+    uint8_t txBuf[2] = { (uint8_t)(addr & 0x7F), 0x00};
+    uint8_t rxBuf[2] = { 0,0};
+    hal_spi_transfer(txBuf, 2, rxBuf);
+    return rxBuf[1];
+#endif
 }
 
 static void writeBuf (u1_t addr, xref2u1_t buf, u1_t len) {
+#ifndef USE_SPI_TRANSFER_CALLS
     hal_pin_nss(0);
     hal_spi(addr | 0x80);
     for (u1_t i=0; i<len; i++) {
         hal_spi(buf[i]);
     }
     hal_pin_nss(1);
+#else
+    uint8_t* txBuf = (uint8_t*) malloc(len + 1);
+    txBuf[0] = addr | 0x80;
+    memcpy(&txBuf[1], buf, len);
+    uint8_t* rxBuf = (uint8_t*) malloc(len+1);
+    hal_spi_transfer(txBuf, len+1, rxBuf);
+    memcpy(buf, txBuf+1, len);
+    free(txBuf);
+    free(rxBuf);
+#endif
 }
 
 static void readBuf (u1_t addr, xref2u1_t buf, u1_t len) {
+#ifndef USE_SPI_TRANSFER_CALLS
     hal_pin_nss(0);
     hal_spi(addr & 0x7F);
     for (u1_t i=0; i<len; i++) {
         buf[i] = hal_spi(0x00);
     }
     hal_pin_nss(1);
+#else
+    uint8_t* rxBuf = (uint8_t*) malloc(len+1);
+    uint8_t* txBuf = (uint8_t*) malloc(len + 1);
+    txBuf[0] = addr & 0x7F;
+    memset(&txBuf[1], 0, len);
+    memset(rxBuf, 0, len+1);
+    hal_spi_transfer(txBuf, len+1, rxBuf);
+    memcpy(buf, rxBuf + 1, len);
+    free(rxBuf);
+    free(txBuf);
+#endif
 }
 
 static void opmode (u1_t mode) {
