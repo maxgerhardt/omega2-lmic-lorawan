@@ -29,12 +29,18 @@ Refer to the datasheets:
   * supports SX1272 and SX1276 type radios  
   * communication to radio via native SPI interface or an I²C to SPI bridge (NXP SC18IS602B)
 * includes the `lorawan_send` commandline tool 
-  * send abitratry payload given the necessary ABP keys
+  * send abitratry payload given the necessary ABP or OTAA keys
+  * payload formats: hex or ascii 
+  * confirmed uplinks 
+  * up/down counters 
+  * spreading factors SF7-SF12
+  * etc
   
 ```sh
-Usage: ./lorawan_send --payload PAYLOAD --dev-adr DEV-ADR --nws-key NWS-KEY --apps-key APPS-KEY
-                     [--format FORMAT]
-```
+Usage: ./lorawan_send --payload PAYLOAD --method METHOD [--dev-adr DEV-ADR] [--nws-key NWS-KEY] 
+                     [--apps-key APPS-KEY] [--format FORMAT] [--up-counter UP-COUNTER] [--down-counter DOWN-COUNTER] 
+                     [--dev-eui DEV-EUI] [--app-eui APP-EUI] [--app-key APP-KEY] [--spreading-factor SPREADING-FACTOR] 
+                     [--fport FPORT] [--confirmed] [--infinite-loop]```
 
 ### In Action
 
@@ -85,11 +91,11 @@ Transfer the binary executable `lorawan_send` to your Omeag2 and execute it with
 
 ### TODO
 
-* adjustable spreading factor (SF) and coding rate (CR)
+* ~~adjustable spreading factor (SF)~~ and coding rate (CR)
 * make radio type selectable (currently SX1276 type)
 * selectable frequency plan (currently hardcoded on EU868), make US frequencies selectable 
-* make LoRa reception work (timing issues right now?)
-* make example with sensors (temp sensor, display, whatever) 
+* ~~make LoRa reception work (timing issues right now?)~~
+* ~~make example with sensors (temp sensor, display, whatever) ~~
 
 ### License
 
