@@ -103,6 +103,9 @@ Transfer the binary executable `lorawan_send` to your Omeag2 and execute it with
 The original code from LMIC see the License section at https://github.com/matthijskooijman/arduino-lmic.
 The command line tool code is also derived from the ABP example code.
 
+Argparse.hpp code is taken from https://github.com/hbristow/argparse.
+License: BSD 3-clause, Copyright (c) 2017, Hilton Bristow
+
 ### Contributors
 
 * Maximilian Gerhardt (port for LMIC HAL, SC18IS602B bridge library)
