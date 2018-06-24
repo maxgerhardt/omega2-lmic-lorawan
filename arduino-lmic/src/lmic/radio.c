@@ -267,7 +267,7 @@ static void writeReg (u1_t addr, u1_t data ) {
     hal_pin_nss(1);
 #else
     uint8_t txBuf[2] = { (uint8_t)(addr | 0x80), data};
-    uint8_t rxBuf[2] = {0};
+    uint8_t rxBuf[2] = {0, 0};
     hal_spi_transfer(txBuf, 2, rxBuf);
 #endif
 }

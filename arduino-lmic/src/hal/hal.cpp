@@ -23,8 +23,6 @@
 #define OUTPUT 1
 #define INPUT 0
 
-//#define USE_NATIVE_SPI
-
 #ifndef USE_NATIVE_SPI
 #include "SC18IS602B.h"
 SC18IS602B spiBridge(-1, -1, 0, 0, 0);
@@ -109,7 +107,7 @@ static void hal_io_init () {
     ASSERT(lmic_pins.dio[1] != LMIC_UNUSED_PIN || lmic_pins.dio[2] != LMIC_UNUSED_PIN);
 
 #ifdef USE_NATIVE_SPI
-    pinMode(lmic_pins.nss, OUTPUT);
+    //pinMode(lmic_pins.nss, OUTPUT);
 #endif
     if (lmic_pins.rxtx != LMIC_UNUSED_PIN)
         pinMode(lmic_pins.rxtx, OUTPUT);
@@ -172,12 +170,13 @@ static void hal_spi_init () {
 	params.misoGpio = 9;
 	params.mosiGpio = 8;
 	params.sckGpio = 7;
-	params.csGpio = -1;
-	params.speedInHz = 1* 1000 * 1000 / 2 / 2;
-	params.modeBits = SPI_DEFAULT_MODE_BITS; //only SPIMODE_0, no dual TX or RX as "default"..
+	params.csGpio = lmic_pins.nss;
+	params.speedInHz = 1* 1000 * 1000;
+	params.mode = SPI_DEFAULT_MODE; //SPI_MODE_0
+	params.modeBits = SPI_DEFAULT_BITS_PER_WORD;
 	params.busNum = 1; //this comes from my local machine. no idea if it works elsewhere.. (ls /dev/spi*)
 	params.deviceId = 32766;
-	params.delayInUs = 10;
+	//params.delayInUs = 10;
 
 	//is our device already mapped?
 	err = spiCheckDevice(params.busNum, params.deviceId, ONION_SEVERITY_DEBUG);
@@ -215,20 +214,97 @@ static void hal_spi_init () {
 #endif
 }
 
+void hexDump (char *desc, void *addr, int len) {
+    int i;
+    unsigned char buff[17];
+    unsigned char *pc = (unsigned char*)addr;
+
+    // Output description if given.
+    if (desc != NULL)
+        printf ("%s:\n", desc);
+
+    if (len == 0) {
+        printf("  ZERO LENGTH\n");
+        return;
+    }
+    if (len < 0) {
+        printf("  NEGATIVE LENGTH: %i\n",len);
+        return;
+    }
+
+    // Process every byte in the data.
+    for (i = 0; i < len; i++) {
+        // Multiple of 16 means new line (with line offset).
+
+        if ((i % 16) == 0) {
+            // Just don't print ASCII for the zeroth line.
+            if (i != 0)
+                printf ("  %s\n", buff);
+
+            // Output the offset.
+            printf ("  %04x ", i);
+        }
+
+        // Now the hex code for the specific character.
+        printf (" %02x", pc[i]);
+
+        // And store a printable ASCII character for later.
+        if ((pc[i] < 0x20) || (pc[i] > 0x7e))
+            buff[i % 16] = '.';
+        else
+            buff[i % 16] = pc[i];
+        buff[(i % 16) + 1] = '\0';
+    }
+
+    // Pad out last line if not exactly 16 characters.
+    while ((i % 16) != 0) {
+        printf ("   ");
+        i++;
+    }
+
+    // And print the final ASCII bit.
+    printf ("  %s\n", buff);
+}
+
+
 void hal_pin_nss (u1_t val) {
     //Serial.println(val?">>":"<<");
 #ifdef USE_NATIVE_SPI
-    digitalWrite(lmic_pins.nss, val);
+    //digitalWrite(lmic_pins.nss, val);
 #else
 	spiBridge.writeGPIO(1, val);
 #endif
 }
 
+bool test = false;
+
 void hal_spi_transfer(uint8_t* txBuf, size_t txLen, uint8_t* rxBuf) {
 #ifdef USE_NATIVE_SPI
+
+	if(!test) {
+		test = true;
+
+		//test out all SPI values
+
+		onionSetVerbosity(ONION_VERBOSITY_EXTRA_VERBOSE);
+
+		for(int i=0; i < 256; i++) {
+			uint8_t tx_byte[2] = { (uint8_t) i, 0};
+			uint8_t rx_byte[2] = {0,0};
+
+			spiTransfer(&params, tx_byte, rx_byte, 2);
+
+			printf("TX/RX: %02x %02x | %02x %02x\n",
+					(int)tx_byte[0], (int)tx_byte[1],
+					(int)rx_byte[0],(int)rx_byte[1]);
+		}
+	}
+
 	int err = spiTransfer(&params, txBuf, rxBuf, txLen);
 	if(err == EXIT_FAILURE)
 		printf("[-] SPI transfer failed!\n");
+	hexDump("SPI tx", txBuf, (int)txLen);
+	hexDump("SPI rx", rxBuf, (int)txLen);
 #else
 	spiBridge.spiTransfer(0, txBuf, txLen, rxBuf);
 #endif

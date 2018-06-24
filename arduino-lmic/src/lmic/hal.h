@@ -19,6 +19,9 @@ extern "C"{
 /* Hack: add SPI transfer calls instead of byte-wise transfers */
 #define USE_SPI_TRANSFER_CALLS
 
+/* Hack: use native SPI interface instead of I2C bridge */
+//#define USE_NATIVE_SPI
+
 /*
  * initialize hardware (IO, SPI, TIMER, IRQ).
  */
