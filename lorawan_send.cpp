@@ -323,7 +323,7 @@ int main(int argc, const char** argv) {
 		format = "hex";
 	}
 
-	if (format.empty()) {
+	if (method.empty()) {
 		method = "ABP";
 	}
 
