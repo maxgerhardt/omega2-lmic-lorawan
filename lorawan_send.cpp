@@ -170,10 +170,12 @@ void hexDump(const char *desc, const void *addr, size_t len) {
 
 dr_t SFToDR(int sf) {
 	switch (sf) {
+#ifndef CFG_us915
 	case 12:
 		return DR_SF12;
 	case 11:
 		return DR_SF11;
+#endif
 	case 10:
 		return DR_SF10;
 	case 9:
@@ -190,10 +192,12 @@ dr_t SFToDR(int sf) {
 
 int DRToSF(dr_t dr) {
 	switch (dr) {
+#ifndef CFG_us915
 	case DR_SF12:
 		return 12;
 	case DR_SF11:
 		return 11;
+#endif
 	case DR_SF10:
 		return 10;
 	case DR_SF9:
