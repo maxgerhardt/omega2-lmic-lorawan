@@ -94,8 +94,8 @@ Transfer the binary executable `lorawan_send` to your Omeag2 and execute it with
 * ~~adjustable spreading factor (SF)~~ and coding rate (CR)
 * ~~make radio type selectable (currently SX1276 type)~~ [recompile if necessary, this is compile time static)
 * ~~selectable frequency plan (currently hardcoded on EU868), make US frequencies selectable~~ [use US910 binary or recompile with `CFG_us915` enabled]
-* ~~make LoRa reception work (timing issues right now?)~~
-* ~~make example with sensors (temp sensor, display, whatever) ~~
+* ~~make LoRa reception work (timing issues right now?)~~	
+* ~~make example with sensors (temp sensor, display, whatever)~~
 
 ### License
 
