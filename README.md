@@ -40,7 +40,8 @@ Refer to the datasheets:
 Usage: ./lorawan_send --payload PAYLOAD --method METHOD [--dev-adr DEV-ADR] [--nws-key NWS-KEY] 
                      [--apps-key APPS-KEY] [--format FORMAT] [--up-counter UP-COUNTER] [--down-counter DOWN-COUNTER] 
                      [--dev-eui DEV-EUI] [--app-eui APP-EUI] [--app-key APP-KEY] [--spreading-factor SPREADING-FACTOR] 
-                     [--fport FPORT] [--confirmed] [--infinite-loop]```
+                     [--fport FPORT] [--confirmed] [--infinite-loop]
+```
 
 ### In Action
 
