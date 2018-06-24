@@ -14,7 +14,7 @@ Basically:
 * connect SC18IS602B via I2C to Omega
    * all address pins to GND
    * attach bridge's SPI bus to the radio's SPI bus (MISO, MOSI, SCLK, CS)
-   * use GPIO1 of the bridge for chip select
+   * use GPIO0 of the bridge for chip select
 * attach DIO0 and DIO1 to GPIO 0 and 1 of the Omega2 (rest of DIOs not needed)
 * power everything (3.3V, GND), add decloupling capacitor for radio
 
@@ -26,7 +26,7 @@ Refer to the datasheets:
 ### Features
 
 * a port of LMIC for the Omega2
-  * supports SX1272 and SX1276 type radios  
+  * supports SX1272 and SX1276 type radios  (change the `config.h` in LMIC and recompile!)
   * communication to radio via native SPI interface or an I²C to SPI bridge (NXP SC18IS602B)
 * includes the `lorawan_send` commandline tool 
   * send abitratry payload given the necessary ABP or OTAA keys
@@ -92,8 +92,8 @@ Transfer the binary executable `lorawan_send` to your Omeag2 and execute it with
 ### TODO
 
 * ~~adjustable spreading factor (SF)~~ and coding rate (CR)
-* make radio type selectable (currently SX1276 type)
-* selectable frequency plan (currently hardcoded on EU868), make US frequencies selectable 
+* ~~make radio type selectable (currently SX1276 type)~~ [recompile if necessary, this is compile time static)
+* ~~selectable frequency plan (currently hardcoded on EU868), make US frequencies selectable~~ [use US910 binary or recompile with `CFG_us915` enabled]
 * ~~make LoRa reception work (timing issues right now?)~~
 * ~~make example with sensors (temp sensor, display, whatever) ~~
 
