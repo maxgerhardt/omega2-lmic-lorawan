@@ -94,11 +94,17 @@ Transfer the binary executable `lorawan_send` to your Omeag2 and execute it with
 
 ### TODO
 
+Addressed ToDos are crossed out.
+
 * ~~adjustable spreading factor (SF)~~ and coding rate (CR)
 * ~~make radio type selectable (currently SX1276 type)~~ [recompile if necessary, this is compile time static)
 * ~~selectable frequency plan (currently hardcoded on EU868), make US frequencies selectable~~ [use US910 binary or recompile with `CFG_us915` enabled]
 * ~~make LoRa reception work (timing issues right now?)~~	
 * ~~make example with sensors (temp sensor, display, whatever)~~
+
+### Compiling
+
+The Makefile is referencing "omega_libs" which include common header and library files for the ease of development. The repository can be found here: https://github.com/gamer-cndg/omega2-libs
 
 ### License
 
