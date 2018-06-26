@@ -6,9 +6,11 @@ A port of [Arduino-LMIC](https://github.com/matthijskooijman/arduino-lmic) to th
 
 This is *WORK IN PROGRESS*!
 
-### Wireup
+### Schematics
 
-Schematic to follow.
+See the schematics folder for PDFs and Fritzing images.
+
+![breadboardview](https://github.com/maxgerhardt/omega2-lmic-lorawan/blob/master/schematic/omega_lora_Steckplatine.png)
 
 Basically:
 * connect SC18IS602B via I2C to Omega
