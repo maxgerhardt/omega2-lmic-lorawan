@@ -101,6 +101,10 @@ Addressed ToDos are crossed out.
 * ~~selectable frequency plan (currently hardcoded on EU868), make US frequencies selectable~~ [use US910 binary or recompile with `CFG_us915` enabled]
 * ~~make LoRa reception work (timing issues right now?)~~	
 * ~~make example with sensors (temp sensor, display, whatever)~~
+* better I2C to SPI bridge driver
+	* depends on https://github.com/OnionIoT/i2c-exp-driver/issues/24
+	* would fail after 64 bytes of SPI payload, can go up to 200 byte 
+	* still would have to restructure the good (go back to manually controlled CS again?) to get to the ~256 byte limit of LoRaWAN packets (max payload size on SF7)
 
 ### Compiling
 
