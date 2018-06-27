@@ -104,8 +104,10 @@ Addressed ToDos are crossed out.
 * better I2C to SPI bridge driver
 	* depends on https://github.com/OnionIoT/i2c-exp-driver/issues/24
 	* would fail after 64 bytes of SPI payload, can go up to 200 byte 
-	* still would have to restructure the good (go back to manually controlled CS again?) to get to the ~256 byte limit of LoRaWAN packets (max payload size on SF7)
-
+	* still would have to restructure the code (go back to manually controlled CS again?) to get to the ~256 byte limit of LoRaWAN packets (max payload size on SF7)
+* make native SPI work 
+	* broken SPI on 0b188? Can't read any data through API although the peripheral transmits the bytes correctly
+	
 ### Compiling
 
 The Makefile is referencing "omega_libs" which include common header and library files for the ease of development. The repository can be found here: https://github.com/gamer-cndg/omega2-libs
